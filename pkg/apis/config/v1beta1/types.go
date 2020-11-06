@@ -67,6 +67,23 @@ type NodeResourcesAllocatableArgs struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
+// NodeResourcesAvailableArgs holds arguments used to configure NodeResourcesAvailable plugin.
+type NodeResourcesAvailableArgs struct {
+	metav1.TypeMeta `json:",inline"`
+
+	// Resources to be considered when scoring.
+	// Allowed weights start from 1.
+	// An example resource set might include "cpu" (millicores) and "memory" (bytes)
+	// with weights of 1<<20 and 1 respectfully. That would mean 1 MiB has equivalent
+	// weight as 1 millicore.
+	Resources []schedulerconfig.ResourceSpec `json:"resources,omitempty"`
+
+	// Whether to prioritize nodes with least or most Available resources.
+	Mode ModeType `json:"mode,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
 // CapacitySchedulingArgs defines the scheduling parameters for CapacityScheduling plugin.
 type CapacitySchedulingArgs struct {
 	metav1.TypeMeta `json:",inline"`

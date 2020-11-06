@@ -26,6 +26,7 @@ var (
 	defaultPodGroupExpirationTimeSeconds int64 = 600
 
 	defaultNodeResourcesAllocatableMode = Least
+	defaultNodeResourcesAvailableMode   = Most
 
 	// defaultResourcesToWeightMap is used to set the default resourceToWeight map for CPU and memory
 	// used by the NodeResourcesAllocatable scoring plugin.
@@ -33,6 +34,15 @@ var (
 	// The default CPU weight is 1<<20 and default memory weight is 1. That means a millicore
 	// has a weighted score equivalent to 1 MiB.
 	defaultNodeResourcesAllocatableResourcesToWeightMap = []schedulerconfig.ResourceSpec{
+		{Name: "cpu", Weight: 1 << 20}, {Name: "memory", Weight: 1},
+	}
+
+	// defaultResourcesToWeightMap is used to set the default resourceToWeight map for CPU and memory
+	// used by the NodeResourcesAvailable scoring plugin.
+	// The base unit for CPU is millicore, while the base using for memory is a byte.
+	// The default CPU weight is 1<<20 and default memory weight is 1. That means a millicore
+	// has a weighted score equivalent to 1 MiB.
+	defaultNodeResourcesAvailableResourcesToWeightMap = []schedulerconfig.ResourceSpec{
 		{Name: "cpu", Weight: 1 << 20}, {Name: "memory", Weight: 1},
 	}
 
@@ -58,6 +68,16 @@ func SetDefaults_NodeResourcesAllocatableArgs(obj *NodeResourcesAllocatableArgs)
 
 	if obj.Mode == "" {
 		obj.Mode = defaultNodeResourcesAllocatableMode
+	}
+}
+
+func SetDefaults_NodeResourcesAvailableArgs(obj *NodeResourcesAvailableArgs) {
+	if len(obj.Resources) == 0 {
+		obj.Resources = defaultNodeResourcesAvailableResourcesToWeightMap
+	}
+
+	if obj.Mode == "" {
+		obj.Mode = defaultNodeResourcesAvailableMode
 	}
 }
 
